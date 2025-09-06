@@ -90,6 +90,7 @@ return {
 		vim.lsp.enable("cairo_ls")
 		vim.lsp.enable("svelte")
 		vim.lsp.enable("cssls")
+		vim.lsp.enable("rust_analyzer")
 
 		-- Config lsp servers here
 		-- lua_ls
