@@ -87,7 +87,6 @@ return {
 
 		vim.lsp.enable("gopls")
 		vim.lsp.enable("solidity_ls_nomicfoundation")
-		vim.lsp.enable("cairo_ls")
 		vim.lsp.enable("svelte")
 		vim.lsp.enable("cssls")
 		vim.lsp.enable("rust_analyzer")
