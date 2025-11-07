@@ -23,6 +23,7 @@ vim.keymap.set("n", "<Esc>", ":nohl<CR>", { desc = "Clear search hl", silent = t
 
 vim.keymap.set("n", "<leader>Y", [["+Y]], opts)
 vim.keymap.set("n", "x", '"_x', opts)
+vim.keymap.set("n", "c", '"_c', opts)
 vim.keymap.set("x", "c", '"_c', opts)
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 
