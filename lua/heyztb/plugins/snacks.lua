@@ -142,7 +142,7 @@ return {
 					{ section = "startup" },
 					{
 						section = "terminal",
-						cmd = "ascii-image-converter ~/Pictures/hb.png -C -c",
+						cmd = "ascii-image-converter ~/Pictures/logos/evergreen_cactuslockwood.jpeg -b",
 						random = 10,
 						pane = 2,
 						indent = 4,
