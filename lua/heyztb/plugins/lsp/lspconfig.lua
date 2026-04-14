@@ -90,6 +90,7 @@ return {
 		vim.lsp.enable("svelte")
 		vim.lsp.enable("cssls")
 		vim.lsp.enable("rust_analyzer")
+		vim.lsp.enable("basedpyright")
 
 		-- Config lsp servers here
 		-- lua_ls

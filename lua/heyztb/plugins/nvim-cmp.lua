@@ -249,6 +249,7 @@ return {
 				--     smart_bs()
 				-- end, { 'i', 's' }),
 
+				["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions on demand
 				["<C-e>"] = cmp.mapping.abort(), -- close completion window
 				["<C-d>"] = cmp.mapping(function()
 					cmp.close_docs()
