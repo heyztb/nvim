@@ -37,6 +37,10 @@ return {
 		-- vim.cmd(string.format([[highlight Headline6Fg guifg=%s gui=bold]], colors.color6_bg))
 	end,
 	opts = {
+		ignore = function(buf)
+			local bo = vim.bo[buf]
+			return bo.buftype == "nofile"
+		end,
 		heading = {
 			sign = false,
 			icons = { "󰎤 ", "󰎧 ", "󰎪 ", "󰎭 ", "󰎱 ", "󰎳 " },

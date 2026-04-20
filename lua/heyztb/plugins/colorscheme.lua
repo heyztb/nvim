@@ -1,9 +1,28 @@
+local theme_file = vim.fn.stdpath("config") .. "/lua/current-theme.lua"
+
 return {
 	-- NOTE: Rose pine
 	{
 		"rose-pine/neovim",
 		name = "rose-pine",
 		-- priority = 1000,
+		init = function()
+			local persist_theme_group = vim.api.nvim_create_augroup("PersistThemeSelection", { clear = true })
+
+			vim.api.nvim_create_autocmd("ColorScheme", {
+				group = persist_theme_group,
+				callback = function()
+					local colorscheme = vim.g.colors_name
+					if not colorscheme or colorscheme == "" then
+						return
+					end
+
+					vim.fn.writefile({
+						string.format('vim.cmd("colorscheme %s")', colorscheme),
+					}, theme_file)
+				end,
+			})
+		end,
 		config = function()
 			require("rose-pine").setup({
 				variant = "main", -- auto, main, moon, or dawn
