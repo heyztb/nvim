@@ -81,20 +81,12 @@ return {
 		})
 
 		-- Setup servers
-		local lspconfig = require("lspconfig")
+		local util = require("lspconfig.util")
 		local cmp_nvim_lsp = require("cmp_nvim_lsp")
 		local capabilities = cmp_nvim_lsp.default_capabilities()
-
-		vim.lsp.enable("gopls")
-		vim.lsp.enable("solidity_ls_nomicfoundation")
-		vim.lsp.enable("svelte")
-		vim.lsp.enable("cssls")
-		vim.lsp.enable("rust_analyzer")
-		vim.lsp.enable("basedpyright")
-
 		-- Config lsp servers here
 		-- lua_ls
-		lspconfig.lua_ls.setup({
+		vim.lsp.config("lua_ls", {
 			capabilities = capabilities,
 			settings = {
 				Lua = {
@@ -114,7 +106,7 @@ return {
 			},
 		})
 		-- emmet_ls
-		lspconfig.emmet_ls.setup({
+		vim.lsp.config("emmet_ls", {
 			capabilities = capabilities,
 			filetypes = {
 				"html",
@@ -129,7 +121,7 @@ return {
 		})
 
 		-- emmet_language_server
-		lspconfig.emmet_language_server.setup({
+		vim.lsp.config("emmet_language_server", {
 			capabilities = capabilities,
 			filetypes = {
 				"css",
@@ -157,16 +149,15 @@ return {
 		})
 
 		-- denols
-		lspconfig.denols.setup({
+		vim.lsp.config("denols", {
 			capabilities = capabilities,
-			root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
+			root_dir = util.root_pattern("deno.json", "deno.jsonc"),
 		})
 
 		-- ts_ls (replaces tsserver)
-		lspconfig.ts_ls.setup({
+		vim.lsp.config("ts_ls", {
 			capabilities = capabilities,
 			root_dir = function(fname)
-				local util = lspconfig.util
 				return not util.root_pattern("deno.json", "deno.jsonc")(fname)
 					and util.root_pattern("tsconfig.json", "package.json", "jsconfig.json", ".git")(fname)
 			end,
@@ -178,5 +169,16 @@ return {
 				},
 			},
 		})
+
+		vim.lsp.enable("gopls")
+		vim.lsp.enable("solidity_ls_nomicfoundation")
+		vim.lsp.enable("svelte")
+		vim.lsp.enable("cssls")
+		vim.lsp.enable("rust_analyzer")
+		vim.lsp.enable("basedpyright")
+		vim.lsp.enable("emmet_ls")
+		vim.lsp.enable("emmet_language_server")
+		vim.lsp.enable("denols")
+		vim.lsp.enable("ts_ls")
 	end,
 }
