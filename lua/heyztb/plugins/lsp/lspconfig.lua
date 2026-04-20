@@ -6,6 +6,8 @@ return {
 		{ "antosha417/nvim-lsp-file-operations", config = true },
 	},
 	config = function()
+		local snacks = require("snacks")
+
 		-- NOTE: LSP Keybinds
 
 		vim.api.nvim_create_autocmd("LspAttach", {
@@ -17,19 +19,27 @@ return {
 
 				-- keymaps
 				opts.desc = "Show LSP references"
-				vim.keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
+				vim.keymap.set("n", "gR", function()
+					snacks.picker.lsp_references()
+				end, opts) -- show definition, references
 
 				opts.desc = "Go to declaration"
 				vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
 
 				opts.desc = "Show LSP definitions"
-				vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
+				vim.keymap.set("n", "gd", function()
+					snacks.picker.lsp_definitions()
+				end, opts) -- show lsp definitions
 
 				opts.desc = "Show LSP implementations"
-				vim.keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
+				vim.keymap.set("n", "gi", function()
+					snacks.picker.lsp_implementations()
+				end, opts) -- show lsp implementations
 
 				opts.desc = "Show LSP type definitions"
-				vim.keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
+				vim.keymap.set("n", "gt", function()
+					snacks.picker.lsp_type_definitions()
+				end, opts) -- show lsp type definitions
 
 				opts.desc = "See available code actions"
 				vim.keymap.set({ "n", "v" }, "<leader>vca", function()
@@ -40,7 +50,9 @@ return {
 				vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
 
 				opts.desc = "Show buffer diagnostics"
-				vim.keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
+				vim.keymap.set("n", "<leader>D", function()
+					snacks.picker.diagnostics_buffer()
+				end, opts) -- show diagnostics for file
 
 				opts.desc = "Show line diagnostics"
 				vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
@@ -105,21 +117,6 @@ return {
 				},
 			},
 		})
-		-- emmet_ls
-		vim.lsp.config("emmet_ls", {
-			capabilities = capabilities,
-			filetypes = {
-				"html",
-				"typescriptreact",
-				"javascriptreact",
-				"css",
-				"sass",
-				"scss",
-				"less",
-				"svelte",
-			},
-		})
-
 		-- emmet_language_server
 		vim.lsp.config("emmet_language_server", {
 			capabilities = capabilities,
@@ -176,7 +173,6 @@ return {
 		vim.lsp.enable("cssls")
 		vim.lsp.enable("rust_analyzer")
 		vim.lsp.enable("basedpyright")
-		vim.lsp.enable("emmet_ls")
 		vim.lsp.enable("emmet_language_server")
 		vim.lsp.enable("denols")
 		vim.lsp.enable("ts_ls")

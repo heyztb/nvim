@@ -1,0 +1,3 @@
+WRN 2026-04-20T14:36:16.407 ?.36549    server_start:197: Failed to start server: operation not permitted: /var/folders/5p/3vgpcv9j5sl5fqf1f040q96r0000gp/T/nvim.zblake/l1vUlP/nvim.36549.0
+WRN 2026-04-20T14:37:06.215 ?.36971    server_start:197: Failed to start server: operation not permitted: /var/folders/5p/3vgpcv9j5sl5fqf1f040q96r0000gp/T/nvim.zblake/Xa3pTE/nvim.36971.0
+WRN 2026-04-20T15:05:23.850 ?.77327    server_start:197: Failed to start server: operation not permitted: /var/folders/5p/3vgpcv9j5sl5fqf1f040q96r0000gp/T/nvim.zblake/GVjhuU/nvim.77327.0
