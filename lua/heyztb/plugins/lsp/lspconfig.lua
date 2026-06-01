@@ -2,78 +2,63 @@ return {
 	"neovim/nvim-lspconfig",
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
-		"hrsh7th/cmp-nvim-lsp",
+		"saghen/blink.cmp",
 		{ "antosha417/nvim-lsp-file-operations", config = true },
 	},
 	config = function()
-		local snacks = require("snacks")
-
-		-- NOTE: LSP Keybinds
-
+		-- NOTE: LSP Custom Keybinds
 		vim.api.nvim_create_autocmd("LspAttach", {
-			group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+			group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
 			callback = function(ev)
 				-- Buffer local mappings
-				-- Check `:help vim.lsp.*` for documentation on any of the below functions
 				local opts = { buffer = ev.buf, silent = true }
 
-				-- keymaps
+				-- Keymaps
 				opts.desc = "Show LSP references"
-				vim.keymap.set("n", "gR", function()
-					snacks.picker.lsp_references()
-				end, opts) -- show definition, references
+				vim.keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts)
 
 				opts.desc = "Go to declaration"
-				vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
+				vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 
 				opts.desc = "Show LSP definitions"
-				vim.keymap.set("n", "gd", function()
-					snacks.picker.lsp_definitions()
-				end, opts) -- show lsp definitions
+				vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
 
 				opts.desc = "Show LSP implementations"
-				vim.keymap.set("n", "gi", function()
-					snacks.picker.lsp_implementations()
-				end, opts) -- show lsp implementations
+				vim.keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
 
 				opts.desc = "Show LSP type definitions"
-				vim.keymap.set("n", "gt", function()
-					snacks.picker.lsp_type_definitions()
-				end, opts) -- show lsp type definitions
+				vim.keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts)
 
 				opts.desc = "See available code actions"
 				vim.keymap.set({ "n", "v" }, "<leader>vca", function()
 					vim.lsp.buf.code_action()
-				end, opts) -- see available code actions, in visual mode will apply to selection
+				end, opts)
 
 				opts.desc = "Smart rename"
-				vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
+				vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
 
 				opts.desc = "Show buffer diagnostics"
+				-- vim.keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts)
 				vim.keymap.set("n", "<leader>D", function()
-					snacks.picker.diagnostics_buffer()
-				end, opts) -- show diagnostics for file
+					require("snacks").picker.diagnostics_buffer()
+				end, opts)
 
 				opts.desc = "Show line diagnostics"
-				vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
+				vim.keymap.set("n", "df", function()
+					vim.diagnostic.open_float()
+				end, opts)
 
 				opts.desc = "Show documentation for what is under cursor"
-				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
+				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 
-				opts.desc = "Restart LSP"
-				vim.keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
-
+				opts.desc = "Show signature help"
 				vim.keymap.set("i", "<C-h>", function()
 					vim.lsp.buf.signature_help()
 				end, opts)
 			end,
 		})
 
-		-- NOTE : Moved all this to Mason including local variables
-		-- used to enable autocompletion (assign to every lsp server config)
-		-- local capabilities = cmp_nvim_lsp.default_capabilities()
-		-- Change the Diagnostic symbols in the sign column (gutter)
-
+		-- NOTE: Diagnostic Setup
 		-- Define sign icons for each severity
 		local signs = {
 			[vim.diagnostic.severity.ERROR] = " ",
@@ -81,25 +66,39 @@ return {
 			[vim.diagnostic.severity.HINT] = "󰠠 ",
 			[vim.diagnostic.severity.INFO] = " ",
 		}
-
-		-- Set the diagnostic config with all icons
+		-- update diagnostic config function
 		vim.diagnostic.config({
-			signs = {
-				text = signs, -- Enable signs in the gutter
+			signs = { text = signs },
+			virtual_text = true,
+			underline = true,
+			update_in_insert = false,
+			float = {
+				focusable = false,
+				style = "minimal",
+				border = "rounded",
+				source = true,
 			},
-			virtual_text = true, -- Specify Enable virtual text for diagnostics
-			underline = true, -- Specify Underline diagnostics
-			update_in_insert = false, -- Keep diagnostics active in insert mode
 		})
 
-		-- Setup servers
-		local util = require("lspconfig.util")
-		local cmp_nvim_lsp = require("cmp_nvim_lsp")
-		local capabilities = cmp_nvim_lsp.default_capabilities()
-		-- Config lsp servers here
+		-- toggle for virtual text
+		vim.keymap.set("n", "<leader>lx", function()
+			local current = vim.diagnostic.config().virtual_text
+			vim.diagnostic.config({ virtual_text = not current })
+		end, { desc = "Toggle LSP virtual text" })
+
+		-- NOTE: Setup servers
+		local capabilities = vim.lsp.protocol.make_client_capabilities()
+		-- blink cmp
+		capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
+
+		-- Global LSP settings (applied to all servers)
+		vim.lsp.config("*", {
+			capabilities = capabilities,
+		})
+
+		-- Configure and enable LSP servers
 		-- lua_ls
 		vim.lsp.config("lua_ls", {
-			capabilities = capabilities,
 			settings = {
 				Lua = {
 					diagnostics = {
@@ -117,19 +116,15 @@ return {
 				},
 			},
 		})
+
 		-- emmet_language_server
 		vim.lsp.config("emmet_language_server", {
-			capabilities = capabilities,
 			filetypes = {
 				"css",
-				"eruby",
 				"html",
 				"javascript",
 				"javascriptreact",
 				"less",
-				"sass",
-				"scss",
-				"pug",
 				"typescriptreact",
 			},
 			init_options = {
@@ -145,36 +140,142 @@ return {
 			},
 		})
 
-		-- denols
-		vim.lsp.config("denols", {
-			capabilities = capabilities,
-			root_dir = util.root_pattern("deno.json", "deno.jsonc"),
+		-- emmet_ls
+		vim.lsp.config("emmet_ls", {
+			filetypes = {
+				"html",
+				"typescriptreact",
+				"javascriptreact",
+				"css",
+				"sass",
+				"scss",
+				"less",
+				"svelte",
+			},
 		})
 
-		-- ts_ls (replaces tsserver)
+		-- ts_ls (TypeScript/JavaScript)
 		vim.lsp.config("ts_ls", {
-			capabilities = capabilities,
-			root_dir = function(fname)
-				return not util.root_pattern("deno.json", "deno.jsonc")(fname)
-					and util.root_pattern("tsconfig.json", "package.json", "jsconfig.json", ".git")(fname)
-			end,
-			single_file_support = false,
+			filetypes = {
+				"javascript",
+				"javascriptreact",
+				"typescript",
+				"typescriptreact",
+			},
+			single_file_support = true,
 			init_options = {
 				preferences = {
-					includeCompletionsWithSnippetText = true,
+					includeCompletionsForModuleExports = true,
 					includeCompletionsForImportStatements = true,
+				},
+			},
+			settings = {
+				typescript = {
+					inlayHints = {
+						includeInlayParameterNameHints = "all",
+						includeInlayVariableTypeHints = true,
+						includeInlayFunctionParameterTypeHints = true,
+					},
+				},
+				javascript = {
+					validate = {
+						enable = true,
+					},
+					inlayHints = {
+						includeInlayParameterNameHints = "all",
+						includeInlayVariableTypeHints = true,
+					},
 				},
 			},
 		})
 
-		vim.lsp.enable("gopls")
-		vim.lsp.enable("solidity_ls_nomicfoundation")
-		vim.lsp.enable("svelte")
-		vim.lsp.enable("cssls")
-		vim.lsp.enable("rust_analyzer")
-		vim.lsp.enable("basedpyright")
-		vim.lsp.enable("emmet_language_server")
-		vim.lsp.enable("denols")
-		vim.lsp.enable("ts_ls")
+		-- gopls
+		vim.lsp.config("gopls", {
+			settings = {
+				gopls = {
+					analyses = {
+						unusedparams = true,
+					},
+					staticcheck = true,
+					gofumpt = true,
+				},
+			},
+		})
+
+		-- css
+		vim.lsp.config("cssls", {
+			filetypes = { "css", "scss", "less" },
+			init_options = { provideFormatter = true },
+			single_file_support = true,
+			settings = {
+				css = {
+					lint = {
+						unknownAtRules = "ignore",
+					},
+					validate = true,
+				},
+				scss = {
+					lint = {
+						unknownAtRules = "ignore",
+					},
+					validate = true,
+				},
+				less = {
+					lint = {
+						unknownAtRules = "ignore",
+					},
+					validate = true,
+				},
+			},
+		})
+
+		-- tailwind
+		vim.lsp.config("tailwindcss", {
+			filetypes = {
+				"html",
+				"css",
+				"javascript",
+				"typescript",
+				"javascriptreact",
+				"typescriptreact",
+				"svelte",
+				"vue",
+				"astro",
+			},
+			init_options = {
+				userLanguages = {
+					astro = "html",
+				},
+			},
+		})
+
+		-- astro
+		vim.lsp.config("astro", {
+			filetypes = { "astro" },
+
+			init_options = {
+				typescript = {
+					tsdk = vim.fn.stdpath("data")
+						.. "/mason/packages/typescript-language-server/node_modules/typescript/lib",
+				},
+			},
+		})
+
+		-- Instead of using mason enable all configured LSP via `automatic_enable=true`
+		-- Prefer more control by enable manual server call below via vim.lsp.enable("")
+		-- mason config: lua/sethy/plugins/lsp/mason.lua:22
+		vim.lsp.enable({
+			"lua_ls",
+			"cssls",
+			"emmet_language_server",
+			"emmet_ls",
+			"ts_ls",
+			"gopls",
+			"rust_analyzer",
+			"astro",
+			"tailwindcss",
+			"marksman",
+			"basedpyright",
+		})
 	end,
 }

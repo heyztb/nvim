@@ -25,22 +25,20 @@ return {
 				},
 			},
 			formatters_by_ft = {
-				javascript = { "prettier" },
-				typescript = { "prettier" },
-				javascriptreact = { "prettier" },
-				typescriptreact = { "prettier" },
-				svelte = { "prettier" },
-				css = { "prettier" },
+				javascript = { "biome-check" },
+				typescript = { "biome-check" },
+				javascriptreact = { "biome-check" },
+				typescriptreact = { "biome-check" },
+				css = { "biome-check" },
 				html = { "prettier" },
-				json = { "prettier" },
+				svelte = { "prettier" },
+				json = { "biome-check" },
 				yaml = { "prettier" },
-				-- markdown = { "prettier" },
 				graphql = { "prettier" },
 				liquid = { "prettier" },
 				lua = { "stylua" },
-				python = { "black" },
-				markdown = { "prettier" },
-				["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
+				markdown = { "mdformat", "markdownlint-cli2", "markdown-toc" },
+				-- python = { "black" },
 			},
 			format_on_save = {
 				lsp_fallback = true,
@@ -70,6 +68,6 @@ return {
 				async = false,
 				timeout_ms = 1000,
 			})
-		end, { desc = " Prettier Format whole file or range (in visual mode) with" })
+		end, { desc = "Format whole file or range in visual mode" })
 	end,
 }

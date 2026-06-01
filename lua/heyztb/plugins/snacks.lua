@@ -1,9 +1,13 @@
 return {
+	-- HACK: docs @ https://github.com/folke/snacks.nvim/blob/main/docs
 	{
 		"folke/snacks.nvim",
 		priority = 1000,
 		lazy = false,
+		-- NOTE: Options
 		opts = {
+			notify = { enabled = false },
+			notifier = { enabled = false },
 			styles = {
 				input = {
 					keys = {
@@ -27,9 +31,15 @@ return {
 					frecency = true,
 					cwd_bonus = false,
 				},
+				exclude = {
+					".git",
+					"node_modules",
+					"dist",
+					"build",
+				},
 				formatters = {
 					file = {
-						filename_first = false,
+						filename_first = true,
 						filename_only = false,
 						icon_width = 2,
 					},
@@ -37,7 +47,7 @@ return {
 				layout = {
 					-- presets options : "default" , "ivy" , "ivy-split" , "telescope" , "vscode", "select" , "sidebar"
 					-- override picker layout in keymaps function as a param below
-					preset = "ivy", -- defaults to this layout unless overidden
+					preset = "telescope", -- defaults to this layout unless overidden
 					cycle = false,
 				},
 				layouts = {
@@ -107,9 +117,11 @@ return {
 				},
 			},
 			image = {
-				enabled = true,
+				enabled = function()
+					return vim.bo.filetype == "markdown"
+				end,
 				doc = {
-					float = true, -- show image on cursor hover
+					float = false, -- show image on cursor hover
 					inline = false, -- show image inline
 					max_width = 50,
 					max_height = 30,
@@ -140,17 +152,18 @@ return {
 					{ section = "header" },
 					{ section = "keys", gap = 1, padding = 1 },
 					{ section = "startup" },
-					{
-						section = "terminal",
-						cmd = "ascii-image-converter ~/Pictures/logos/evergreen_cactuslockwood.jpeg -b",
-						random = 10,
-						pane = 2,
-						indent = 4,
-						height = 30,
-					},
+					-- {
+					--     section = "terminal",
+					--     cmd = "ascii-image-converter ~/Desktop/Others/profile.png -C -c",
+					--     random = 15,
+					--     pane = 2,
+					--     indent = 15,
+					--     height = 20,
+					-- },
 				},
 			},
 		},
+		-- NOTE: Keymaps
 		keys = {
 			{
 				"<leader>lg",
@@ -181,27 +194,7 @@ return {
 				desc = "Delete or Close Buffer  (Confirm)",
 			},
 
-			{
-				"<leader>pf",
-				function()
-					require("snacks").picker.files()
-				end,
-				desc = "Find Files (Snacks Picker)",
-			},
-			{
-				"<leader>pc",
-				function()
-					require("snacks").picker.files({ cwd = vim.fn.stdpath("config") })
-				end,
-				desc = "Find Config File",
-			},
-			{
-				"<leader>ps",
-				function()
-					require("snacks").picker.grep()
-				end,
-				desc = "Grep word",
-			},
+			-- Snacks Picker
 			{
 				"<leader>pws",
 				function()
@@ -218,6 +211,7 @@ return {
 				desc = "Search Keymaps (Snacks Picker)",
 			},
 
+			-- Git Stuff
 			{
 				"<leader>gbr",
 				function()
@@ -225,6 +219,8 @@ return {
 				end,
 				desc = "Pick and Switch Git Branches",
 			},
+
+			-- Other Utils
 			{
 				"<leader>th",
 				function()
@@ -241,6 +237,7 @@ return {
 			},
 		},
 	},
+	-- NOTE: todo comments w/ snacks
 	{
 		"folke/todo-comments.nvim",
 		event = { "BufReadPre", "BufNewFile" },
@@ -251,14 +248,14 @@ return {
 				function()
 					require("snacks").picker.todo_comments()
 				end,
-				desc = "Todo",
+				desc = "All",
 			},
 			{
 				"<leader>pT",
 				function()
-					require("snacks").picker.todo_comments({ keywords = { "TODO", "FIX", "FIXME" } })
+					require("snacks").picker.todo_comments({ keywords = { "TODO", "FORGETNOT", "FIXME" } })
 				end,
-				desc = "Todo/Fix/Fixme",
+				desc = "mains",
 			},
 		},
 	},

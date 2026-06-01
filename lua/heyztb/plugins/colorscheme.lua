@@ -282,4 +282,13 @@ return {
 			vim.g.everforest_transparent_background = 1
 		end,
 	},
+	{
+		"vague-theme/vague.nvim",
+		priority = 1000,
+		config = function()
+			require("vague").setup({
+				transparent = true,
+			})
+		end,
+	},
 }
