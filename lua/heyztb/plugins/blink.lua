@@ -5,6 +5,16 @@ return {
 		dependencies = {
 			"L3MON4D3/LuaSnip",
 			"rafamadriz/friendly-snippets",
+			{
+				"supermaven-inc/supermaven-nvim",
+				opts = {
+					disable_inline_completion = true, -- disables inline completion for use with cmp
+					disable_keymaps = true, -- disables built in keymaps for more manual control
+				},
+			},
+			{
+				"huijiro/blink-cmp-supermaven",
+			},
 		},
 		config = function()
 			require("blink.cmp").setup({
@@ -22,8 +32,8 @@ return {
 						auto_show = true,
 					},
 					ghost_text = {
-						enabled = false,
-						show_with_menu = false,
+						enabled = true,
+						show_with_menu = true,
 					},
 					accept = {
 						auto_brackets = {
@@ -39,12 +49,17 @@ return {
 					},
 				},
 				sources = {
-					default = { "lsp", "path", "buffer", "snippets" },
+					default = { "lsp", "path", "supermaven", "buffer", "snippets" },
 					providers = {
 						lsp = {
 							opts = {
 								tailwind_color_icon = "󱓻",
 							},
+						},
+						supermaven = {
+							name = "supermaven",
+							module = "blink-cmp-supermaven",
+							async = true,
 						},
 					},
 				},
