@@ -32,7 +32,7 @@ return {
 						auto_show = true,
 					},
 					ghost_text = {
-						enabled = true,
+						enabled = false,
 						show_with_menu = true,
 					},
 					accept = {
