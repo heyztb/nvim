@@ -276,6 +276,7 @@ return {
 			"tailwindcss",
 			"marksman",
 			"basedpyright",
+			"clangd",
 		})
 	end,
 }
