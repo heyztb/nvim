@@ -42,7 +42,6 @@ return {
 				"rust_analyzer",
 				"basedpyright",
 				"clangd",
-				"cpplint",
 			},
 		})
 
