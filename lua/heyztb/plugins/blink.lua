@@ -8,7 +8,7 @@ return {
 			{
 				"supermaven-inc/supermaven-nvim",
 				opts = {
-					disable_keymaps = true, -- disables built in keymaps for more manual control
+					disable_keymaps = false, -- disables built in keymaps for more manual control
 				},
 			},
 			{
