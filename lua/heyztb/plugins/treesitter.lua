@@ -32,6 +32,7 @@ return {
 				"java",
 				"rust",
 				"ron",
+				"just",
 			}
 
 			treesitter.install(ensure_installed)

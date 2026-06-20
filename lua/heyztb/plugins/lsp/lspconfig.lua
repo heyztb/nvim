@@ -277,6 +277,7 @@ return {
 			"marksman",
 			"basedpyright",
 			"clangd",
+			"just-lsp",
 		})
 	end,
 }
